@@ -126,7 +126,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnImpBrwse.Location" type="System.Drawing.Point, System.Drawing">
-    <value>400, 23</value>
+    <value>400, 38</value>
   </data>
   <data name="btnImpBrwse.Size" type="System.Drawing.Size, System.Drawing">
     <value>32, 23</value>
@@ -148,7 +148,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnImpBrwse.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>11</value>
   </data>
   <data name="btnTourEdit.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -157,7 +157,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnTourEdit.Location" type="System.Drawing.Point, System.Drawing">
-    <value>438, 23</value>
+    <value>438, 38</value>
   </data>
   <data name="btnTourEdit.Size" type="System.Drawing.Size, System.Drawing">
     <value>48, 23</value>
@@ -178,7 +178,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnTourEdit.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>10</value>
   </data>
   <data name="btnImport.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -187,7 +187,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnImport.Location" type="System.Drawing.Point, System.Drawing">
-    <value>505, 23</value>
+    <value>505, 38</value>
   </data>
   <data name="btnImport.Size" type="System.Drawing.Size, System.Drawing">
     <value>80, 23</value>
@@ -208,7 +208,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnImport.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="btnExpBrwse.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -217,7 +217,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnExpBrwse.Location" type="System.Drawing.Point, System.Drawing">
-    <value>400, 62</value>
+    <value>400, 77</value>
   </data>
   <data name="btnExpBrwse.Size" type="System.Drawing.Size, System.Drawing">
     <value>32, 23</value>
@@ -238,7 +238,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnExpBrwse.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="btnExport.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -247,7 +247,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnExport.Location" type="System.Drawing.Point, System.Drawing">
-    <value>505, 62</value>
+    <value>505, 77</value>
   </data>
   <data name="btnExport.Size" type="System.Drawing.Size, System.Drawing">
     <value>80, 23</value>
@@ -268,7 +268,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnExport.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="btnCalc.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -277,7 +277,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnCalc.Location" type="System.Drawing.Point, System.Drawing">
-    <value>505, 141</value>
+    <value>505, 156</value>
   </data>
   <data name="btnCalc.Size" type="System.Drawing.Size, System.Drawing">
     <value>80, 23</value>
@@ -298,7 +298,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnCalc.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="userRichTextBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
@@ -307,10 +307,10 @@
     <value>Courier New, 9.75pt</value>
   </data>
   <data name="userRichTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 141</value>
+    <value>13, 156</value>
   </data>
   <data name="userRichTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>473, 173</value>
+    <value>473, 174</value>
   </data>
   <data name="userRichTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -328,13 +328,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;userRichTextBox.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="fileCmbExport.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
   <data name="fileCmbExport.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 63</value>
+    <value>13, 78</value>
   </data>
   <data name="fileCmbExport.Size" type="System.Drawing.Size, System.Drawing">
     <value>365, 21</value>
@@ -352,13 +352,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;fileCmbExport.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="fileCmbTour.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
   <data name="fileCmbTour.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 24</value>
+    <value>12, 39</value>
   </data>
   <data name="fileCmbTour.Size" type="System.Drawing.Size, System.Drawing">
     <value>366, 21</value>
@@ -376,13 +376,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;fileCmbTour.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>12</value>
   </data>
   <data name="userCmbTitle.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
   <data name="userCmbTitle.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 102</value>
+    <value>13, 117</value>
   </data>
   <data name="userCmbTitle.Size" type="System.Drawing.Size, System.Drawing">
     <value>365, 21</value>
@@ -403,7 +403,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;userCmbTitle.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="btnEditExport.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -412,7 +412,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnEditExport.Location" type="System.Drawing.Point, System.Drawing">
-    <value>438, 62</value>
+    <value>438, 77</value>
   </data>
   <data name="btnEditExport.Size" type="System.Drawing.Size, System.Drawing">
     <value>48, 23</value>
@@ -433,13 +433,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnEditExport.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="userCmbOdo.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
   <data name="userCmbOdo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>400, 102</value>
+    <value>400, 117</value>
   </data>
   <data name="userCmbOdo.Size" type="System.Drawing.Size, System.Drawing">
     <value>86, 21</value>
@@ -457,7 +457,76 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;userCmbOdo.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="btnRenFile.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="btnRenFile.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnRenFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>505, 115</value>
+  </data>
+  <data name="btnRenFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>80, 23</value>
+  </data>
+  <data name="btnRenFile.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="btnRenFile.Text" xml:space="preserve">
+    <value>&amp;Rename</value>
+  </data>
+  <data name="&gt;&gt;btnRenFile.Name" xml:space="preserve">
+    <value>btnRenFile</value>
+  </data>
+  <data name="&gt;&gt;btnRenFile.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnRenFile.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;btnRenFile.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <metadata name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="aboutToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="aboutToolStripMenuItem.Text" xml:space="preserve">
+    <value>About...</value>
+  </data>
+  <data name="helpToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 20</value>
+  </data>
+  <data name="helpToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Help...</value>
+  </data>
+  <data name="menuStrip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="menuStrip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>598, 24</value>
+  </data>
+  <data name="menuStrip.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="menuStrip.Text" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
+  <data name="&gt;&gt;menuStrip.Name" xml:space="preserve">
+    <value>menuStrip</value>
+  </data>
+  <data name="&gt;&gt;menuStrip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;menuStrip.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;menuStrip.ZOrder" xml:space="preserve">
+    <value>13</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -466,7 +535,7 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>598, 326</value>
+    <value>598, 342</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -491,13 +560,25 @@
 </value>
   </data>
   <data name="$this.MaximumSize" type="System.Drawing.Size, System.Drawing">
-    <value>2000, 365</value>
+    <value>2000, 381</value>
   </data>
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>395, 365</value>
+    <value>395, 381</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>BikeTourImport</value>
+  </data>
+  <data name="&gt;&gt;helpToolStripMenuItem.Name" xml:space="preserve">
+    <value>helpToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;helpToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;aboutToolStripMenuItem.Name" xml:space="preserve">
+    <value>aboutToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;aboutToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>BikeImport</value>

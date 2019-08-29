@@ -24,7 +24,9 @@ namespace BikeTourImport
         private const string APPNAME    = "BikeTourImport.ini";
         private const string EXPORTXL   = "D:\\data\\DOCS\\Bike\\Radtouren\\KMundHM.xlsm";
         private const string ODOMETER   = "CM9.3A";
+        private const string RELEASE    = "Release: 1.00 RC1";
         private const int    DB_VERSION = 150;
+
 
         private string      m_Filename;
         private string      m_ExpFileNm;
@@ -97,10 +99,12 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   01.05.2018
+        LAST CHANGE:   27.06.2019
         ***************************************************************************/
         private void BikeImport_FormClosing( object sender, FormClosingEventArgs e )
         {
+            AddTextEntries();
+
             if (! m_Config.OpenWrite() ) return;
 
             Serialize( ref m_Config );
@@ -160,21 +164,84 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   24.04.2019
+        LAST CHANGE:   26.06.2019
         ***************************************************************************/
         private void btnImport_Click( object sender, EventArgs e )
         {
             m_Filename = fileCmbTour.Text;
             m_Data.Import( m_Filename );
+            m_Data.Calculate();
+            m_Data.ShowData();
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       06.05.2019
+        LAST CHANGE:   06.05.2019
+        ***************************************************************************/
+        private void btnRenFile_Click( object sender, EventArgs e )
+        {
+            try
+            {
+                m_Filename = fileCmbTour.Text;
+
+                if ( ! File.Exists(m_Filename) )
+                {
+                    MessageBox.Show(m_Filename + " does not exist","File error");
+                    return;
+                }
+
+                string fnbody = Utils.GetFilenameBody(m_Filename);
+                string newfn  = userCmbTitle.Text.Replace(" ","_");
+
+                if( m_Filename.Contains( newfn ) )
+                {
+                    MessageBox.Show( m_Filename + " already renamed", "File renaming error" );
+                    return;
+                }
+
+                if( fnbody.Length > 19 )
+                {
+                    MessageBox.Show( m_Filename + " already has a postfix", "File renaming error" );
+                    return;
+                }
+
+                newfn = fnbody + "_" + newfn;
+
+                m_Filename = m_Filename.Replace( fnbody, newfn );
+                fileCmbTour.Text = m_Filename;
+
+                string dir    = Utils.GetPath( m_Filename );
+                string[] fls  = Directory.GetFiles(dir);
+
+                foreach( string fl in fls )
+                {
+                    if ( fl.Contains( fnbody ) )
+                    {
+                        FileInfo fi = new FileInfo(fl);
+                        if (fi.Exists)
+                        {
+                            string ext = "." + Utils.GetExtension(fl);
+                            fi.MoveTo( Utils.ConcatPaths(dir,newfn) + ext );
+                        }
+                    }
+                }
+            }
+            catch( Exception ex )
+            {
+                MessageBox.Show( ex.Message, "Renaming exception");
+            }
         }
 
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       22.07.2018
-        LAST CHANGE:   01.04.2019
+        LAST CHANGE:   27.06.2019
         ***************************************************************************/
         private void btnExport_Click( object sender, EventArgs e )
         {
+            AddTextEntries();
+
             m_ExpFileNm = fileCmbExport.Text;
 
             if ( m_ExpFileNm == "none" )
@@ -209,6 +276,7 @@ namespace BikeTourImport
         ***************************************************************************/
         private void btnExpBrwse_Click( object sender, EventArgs e )
         {
+            AddTextEntries();
             DialogResult dlg = fileCmbExport.BrowseFileRead( "Text files (*.xls*)|*.xls*|All files (*.*)|*.*" );
 
             if (dlg != DialogResult.OK) return;
@@ -237,6 +305,17 @@ namespace BikeTourImport
         {
             AddTextEntries();
             fileCmbExport.Edit();
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       29.08.2019
+        LAST CHANGE:   29.08.2019
+        ***************************************************************************/
+        private void aboutToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            About dlg = new About( RELEASE );
+            dlg.ShowDialog();
         }
     }
 }

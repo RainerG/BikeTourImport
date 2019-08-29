@@ -330,14 +330,19 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       28.08.2018
-        LAST CHANGE:   17.09.2018
+        LAST CHANGE:   27.06.2019
         ***************************************************************************/
         public void Export2XL( string a_Fname, string a_Title, string a_Odo )
         {
-            m_XlExp.OpenExcel( a_Fname );
+            string sht = "MTB";
+            if ( a_Odo.ToLower().EndsWith("c") ) sht = "CB";
+            m_XlExp.OpenExcel( a_Fname, sht );
+
             List<XlCell> lst = new List<XlCell>();
             lst.Add( new XlCell( a_Title, "" ) );
             lst.Add( new XlCell( string.Format( "{0:dd.MMM.yyyy}", m_Statcs.TimeStart.Date ), "dd.MMM.yyyy" ) );
+            lst.Add( new XlCell( "" ) );
+            lst.Add( new XlCell( string.Format( "{0:00}:{1:00}", m_Statcs.TimeStart.Hour, m_Statcs.TimeStart.Minute ), "HH:mm" ) );
             lst.Add( new XlCell( string.Format( "{0}", a_Odo ) ) );
             lst.Add( new XlCell( "" ) );
             lst.Add( new XlCell( "" ) );

@@ -41,6 +41,11 @@
             this.userCmbTitle = new NS_UserCombo.UserComboBox();
             this.btnEditExport = new System.Windows.Forms.Button();
             this.userCmbOdo = new NS_UserCombo.UserComboBox();
+            this.btnRenFile = new System.Windows.Forms.Button();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnImpBrwse
@@ -137,10 +142,39 @@
             this.userCmbOdo.Name = "userCmbOdo";
             this.userCmbOdo.ReadOnly = false;
             // 
+            // btnRenFile
+            // 
+            resources.ApplyResources(this.btnRenFile, "btnRenFile");
+            this.btnRenFile.Name = "btnRenFile";
+            this.btnRenFile.UseVisualStyleBackColor = true;
+            this.btnRenFile.Click += new System.EventHandler(this.btnRenFile_Click);
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem});
+            resources.ApplyResources(this.menuStrip, "menuStrip");
+            this.menuStrip.Name = "menuStrip";
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            resources.ApplyResources(this.helpToolStripMenuItem, "helpToolStripMenuItem");
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            resources.ApplyResources(this.aboutToolStripMenuItem, "aboutToolStripMenuItem");
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
             // BikeImport
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnRenFile);
             this.Controls.Add(this.userCmbOdo);
             this.Controls.Add(this.btnEditExport);
             this.Controls.Add(this.userCmbTitle);
@@ -153,10 +187,15 @@
             this.Controls.Add(this.btnTourEdit);
             this.Controls.Add(this.btnImpBrwse);
             this.Controls.Add(this.fileCmbTour);
+            this.Controls.Add(this.menuStrip);
+            this.MainMenuStrip = this.menuStrip;
             this.Name = "BikeImport";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BikeImport_FormClosing);
             this.Load += new System.EventHandler(this.BikeImport_Load);
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -174,6 +213,10 @@
         private NS_UserCombo.UserComboBox userCmbTitle;
         private System.Windows.Forms.Button btnEditExport;
         private NS_UserCombo.UserComboBox userCmbOdo;
+        private System.Windows.Forms.Button btnRenFile;
+        private System.Windows.Forms.MenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 
