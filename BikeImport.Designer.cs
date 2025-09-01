@@ -125,6 +125,7 @@
             this.userCmbTitle.FormattingEnabled = true;
             this.userCmbTitle.Name = "userCmbTitle";
             this.userCmbTitle.ReadOnly = false;
+            this.userCmbTitle.Sorted = true;
             // 
             // btnEditExport
             // 

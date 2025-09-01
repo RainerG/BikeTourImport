@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
 using System.Windows.Forms;
-using System.Drawing;
-
-using NS_Utilities;
+using Dynastream.Fit;
 using NS_AppConfig;
 using NS_UserOut;
+using NS_Utilities;
 using NS_WordExcel;
-
 using Excel = Microsoft.Office.Interop.Excel; 
 
 namespace BikeTourImport
@@ -42,12 +41,12 @@ namespace BikeTourImport
         ***************************************************************************/
         public TourData( UserRichTextBox a_RTB )
         {
-            m_RTB       = a_RTB;
-            m_LineNr    = 0;
-            m_Data      = new List<DataStruct>();
-            m_OutList   = new OutputList();
-            m_XlExp     = m_OutList.WdXlExport;
-            m_Statcs    = new Statistics();
+            m_RTB     = a_RTB;
+            m_LineNr  = 0;
+            m_Data    = new List<DataStruct>();
+            m_OutList = new OutputList();
+            m_XlExp   = m_OutList.WdXlExport;
+            m_Statcs  = new Statistics();
 
             List<NumFormat> frmts = m_XlExp.NumFrmts;
             frmts.Add( new NumFormat( 1,"yyyy.mm.dd") );
@@ -100,9 +99,9 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   01.05.2018
+        LAST CHANGE:   06.07.2025
         ***************************************************************************/
-        public void Import( string a_Fname )
+        public void Import( string a_Fname, bool a_Fit = false )
         {
             StreamReader rdr = null;
             m_Data.Clear();
@@ -110,41 +109,306 @@ namespace BikeTourImport
 
             try
             {
-                rdr = new StreamReader( a_Fname );
-                string line = "";
+                if ( ! System.IO.File.Exists( a_Fname ) ) return;
 
-                while( !rdr.EndOfStream )
+                string ext = Utils.GetExtension( a_Fname ).ToLower();
+
+                switch( ext )
                 {
-                    line = rdr.ReadLine();
+                    case "fit":
+                        using( FileStream fitFile = new FileStream( a_Fname, FileMode.Open ) )
+                        {
+                            Decode decode = new Decode();
+                            MesgBroadcaster broadcaster = new MesgBroadcaster();
 
-                    if (m_LineNr == 0)
-                    {
-                        ParseCols( line );
-                        m_LineNr++;
-                        continue;
-                    }
+                            m_Cols = new List<string>();
+                            m_Cols.Add("Date");
+                            m_Cols.Add("Time");
+                            m_Cols.Add("Distance");
+                            m_Cols.Add("Speed");
+                            m_Cols.Add("HeartRate");
+                            m_Cols.Add("Altitude");
+                            m_Cols.Add("Temperature");
 
-                    ParseLine( line );
+                            broadcaster.MesgEvent += ( sender, e ) =>
+                            {
+                                #if true
+                                List<Field> flds = (List<Field>)e.mesg.Fields;
+                                List<string> fds = new List<string>();
+                                foreach( Field f in flds ) fds.Add( f.Name );
+                                System.IO.File.WriteAllLines( "d:\\tmp\\test.txt", fds );
+                                #endif
 
-                    m_LineNr++;
+                                switch( e.mesg.Name.ToLower() )
+                                {
+                                    case "unknown":
+                                        break;
+
+                                    case "split":
+                                        var totelpsdtm  = e.mesg.GetFieldValue ( "TotalElapsedTime" );
+                                        var tottmrtm    = e.mesg.GetFieldValue ( "TotalTimerTime" );
+                                        var totdist     = e.mesg.GetFieldValue ( "TotalDistance" );
+                                        var avgspeed    = e.mesg.GetFieldValue ( "AvgSpeed" );
+                                        var starttm     = e.mesg.GetFieldValue ( "StartTime" );
+                                        var strtposlat  = e.mesg.GetFieldValue ( "StartPositionLat" );
+                                        var strtposlon  = e.mesg.GetFieldValue ( "StartPositionLong" );
+                                        var maxspeed    = e.mesg.GetFieldValue ( "MaxSpeed" );
+                                        var avgvertspd  = e.mesg.GetFieldValue ( "AvgVertSpeed" );
+                                        var endtime     = e.mesg.GetFieldValue ( "EndTime" );
+                                        var totcalories = e.mesg.GetFieldValue ( "TotalCalories" );
+                                        var startelev   = e.mesg.GetFieldValue ( "StartElevation" );
+                                        var msgidx      = e.mesg.GetFieldValue ( "MessageIndex" );
+                                        var totascnt    = e.mesg.GetFieldValue ( "TotalAscent" );
+                                        var totdescnt   = e.mesg.GetFieldValue ( "TotalDescent" );
+                                        var splittype   = e.mesg.GetFieldValue ( "SplitType" );
+                                        break;
+
+                                    case "splitsummary":
+                                            tottmrtm    = e.mesg.GetFieldValue ( "TotalTimerTime" );
+                                            msgidx      = e.mesg.GetFieldValue ( "MessageIndex" );
+                                        var numsplts    = e.mesg.GetFieldValue ( "NumSplits" );
+                                        var splttype    = e.mesg.GetFieldValue ( "SplitType" );
+                                        break;
+
+                                    case "timeinzone":
+                                        var timestmp       = e.mesg.GetFieldValue ( "Timestamp" );
+                                        var timeinhrzn     = e.mesg.GetFieldValue ( "TimeInHrZone" );
+                                        var timeinpwrzn    = e.mesg.GetFieldValue ( "TimeInPowerZone" );
+                                        var powznhgbound   = e.mesg.GetFieldValue ( "PowerZoneHighBoundary" );
+                                        var refmsg         = e.mesg.GetFieldValue ( "ReferenceMesg" );
+                                        var refidx         = e.mesg.GetFieldValue ( "ReferenceIndex" );
+                                        var hrunhghbound   = e.mesg.GetFieldValue ( "HrZoneHighBoundary" );
+                                        var hrcalctp       = e.mesg.GetFieldValue ( "HrCalcType" );
+                                        var maxheartrate   = e.mesg.GetFieldValue ( "MaxHeartRate" );
+                                        var restnghrtrate  = e.mesg.GetFieldValue ( "RestingHeartRate" );
+                                        break;
+
+                                    case "timestampcorrelation":
+                                            timestmp       = e.mesg.GetFieldValue ( "Timestamp" );
+                                        var systimestmp    = e.mesg.GetFieldValue ( "SystemTimestamp" );
+                                        var loctimestmp    = e.mesg.GetFieldValue ( "LocalTimestamp" );
+                                        break;
+
+                                    case "fileid":
+                                        var serial    = e.mesg.GetFieldValue ( "SerialNumber" );
+                                        var time      = e.mesg.GetFieldValue ( "TimeCreated" );
+                                        var manufact  = e.mesg.GetFieldValue ( "Manufacturer" );
+                                        var product   = e.mesg.GetFieldValue ( "Product" );
+                                        var type      = e.mesg.GetFieldValue ( "Type" );
+                                        break;
+
+                                    case "filecreator":
+                                        var swvers    = e.mesg.GetFieldValue ( "SoftwareVersion" );
+                                        break;
+
+                                    case "activity":
+                                            serial    = e.mesg.GetFieldValue ( "SerialNumber" );
+                                            time      = e.mesg.GetFieldValue ( "TimeCreated" );
+                                        var distance  = e.mesg.GetFieldValue ( "distance" );
+                                        var speed     = e.mesg.GetFieldValue ( "speed" );
+                                        var altitude  = e.mesg.GetFieldValue ( "altitude" );
+                                        var heartRate = e.mesg.GetFieldValue ( "heart_rate" );
+                                        break;
+
+                                    case "session":
+                                            timestmp    = e.mesg.GetFieldValue ( "Timestamp" );
+                                            starttm     = e.mesg.GetFieldValue ( "StartTime" );
+                                        var totdistance = e.mesg.GetFieldValue ( "TotalDistance" );
+                                        var totascent   = e.mesg.GetFieldValue ( "TotalAscent" );
+                                        var totdescent  = e.mesg.GetFieldValue ( "TotalDescent" );
+                                        var mintemp     = e.mesg.GetFieldValue ( "MinTemperature" );
+                                        var avgtemp     = e.mesg.GetFieldValue ( "AvgTemperature" );
+                                        var maxtemp     = e.mesg.GetFieldValue ( "MaxTemperature" );
+                                        break;
+
+                                    case "lap":
+                                            timestmp    = e.mesg.GetFieldValue ( "Timestamp" );
+                                            starttm     = e.mesg.GetFieldValue ( "StartTime" );
+                                            strtposlat  = e.mesg.GetFieldValue ( "StartPositionLat" );
+                                            strtposlon  = e.mesg.GetFieldValue ( "StartPositionLong" );
+                                        var endposlat   = e.mesg.GetFieldValue ( "EndPositionLat" );
+                                        var endposlon   = e.mesg.GetFieldValue ( "EndPositionLong" );
+                                            totelpsdtm  = e.mesg.GetFieldValue ( "TotalElapsedTime" );
+                                            tottmrtm    = e.mesg.GetFieldValue ( "TotalTimerTime" );
+                                            totdist     = e.mesg.GetFieldValue ( "TotalDistance" );
+                                        var totcycles   = e.mesg.GetFieldValue ( "TotalCycles" );
+                                        var avglftpowph = e.mesg.GetFieldValue ( "AvgLeftPowerPhase" );
+                                        var avglftpowpp = e.mesg.GetFieldValue ( "AvgLeftPowerPhasePeak" );
+                                        var avgrhtpowph = e.mesg.GetFieldValue ( "AvgRightPowerPhase" );
+                                        var avgrhtpowpp = e.mesg.GetFieldValue ( "AvgRightPowerPhasePeak" );
+                                        var avgpowpos   = e.mesg.GetFieldValue ( "AvgPowerPosition" );
+                                        var maxpowpos   = e.mesg.GetFieldValue ( "MaxPowerPosition" );
+                                        var enhavgspd   = e.mesg.GetFieldValue ( "EnhancedAvgSpeed" );
+                                        var enhmaxspd   = e.mesg.GetFieldValue ( "EnhancedMaxSpeed" );
+                                            msgidx      = e.mesg.GetFieldValue ( "MessageIndex" );
+                                        var totcals     = e.mesg.GetFieldValue ( "TotalCalories" );
+                                            totascnt    = e.mesg.GetFieldValue ( "TotalAscent" );
+                                            totdescnt   = e.mesg.GetFieldValue ( "TotalDescent" );
+                                        var evnt        = e.mesg.GetFieldValue ( "Event" );
+                                        var evttype     = e.mesg.GetFieldValue ( "EventType" );
+                                        var avghrtrate  = e.mesg.GetFieldValue ( "AvgHeartRate" );
+                                        var maxhrtrate  = e.mesg.GetFieldValue ( "MaxHeartRate" );
+                                        var avgcadence  = e.mesg.GetFieldValue ( "AvgCadence" );
+                                        var maxcadence  = e.mesg.GetFieldValue ( "MaxCadence" );
+                                        var laptrigger  = e.mesg.GetFieldValue ( "LapTrigger" );
+                                        var sport       = e.mesg.GetFieldValue ( "Sport" );
+                                        var subsport    = e.mesg.GetFieldValue ( "SubSport" );
+                                            avgtemp     = e.mesg.GetFieldValue ( "AvgTemperature" );
+                                            maxtemp     = e.mesg.GetFieldValue ( "MaxTemperature" );
+                                        var avgfrctcad  = e.mesg.GetFieldValue ( "AvgFractionalCadence" );
+                                        var maxfrctcad  = e.mesg.GetFieldValue ( "MaxFractionalCadence" );
+                                        var avgcadpos   = e.mesg.GetFieldValue ( "AvgCadencePosition" );
+                                        var maxcadpos   = e.mesg.GetFieldValue ( "MaxCadencePosition" );
+                                            mintemp     = e.mesg.GetFieldValue ( "MinTemperature" );
+                                        break;
+
+                                    case "event":
+                                            timestmp  = e.mesg.GetFieldValue ( "Timestamp" );
+                                        var dat       = e.mesg.GetFieldValue ( "Data" );
+                                            evnt      = e.mesg.GetFieldValue ( "Event" );
+                                        var evnttype  = e.mesg.GetFieldValue ( "EventType" );
+                                        var evntgrp   = e.mesg.GetFieldValue ( "EventGroup" );
+                                        break;
+
+                                    case "record":
+                                            timestmp    = e.mesg.GetFieldValue ( "Timestamp" );
+                                            distance    = e.mesg.GetFieldValue ( "Distance" );       
+                                        var poslat      = e.mesg.GetFieldValue ( "PositionLat" );       
+                                        var poslong     = e.mesg.GetFieldValue ( "PositionLong" );       
+                                        var enhaltitude = e.mesg.GetFieldValue ( "EnhancedAltitude" );       
+                                        var hrtrate     = e.mesg.GetFieldValue ( "HeartRate" );       
+                                        var enhspeed    = e.mesg.GetFieldValue ( "EnhancedSpeed" );       
+                                        var temperature = e.mesg.GetFieldValue ( "Temperature" );       
+
+                                        DataStruct ds = new DataStruct();
+                                        ds.Date         = string.Format( "{0}", new Dynastream.Fit.DateTime((uint)timestmp).GetDateTime().ToString( "yyyy-MM-dd" ) );
+                                        ds.Time         = string.Format( "{0}", new Dynastream.Fit.DateTime((uint)timestmp).GetDateTime().ToString( "HH:mm:ss" ) );
+                                        ds.Distance     = string.Format( "{0}", distance );
+                                        ds.Speed        = string.Format( "{0}", enhspeed );
+                                        ds.HeartRate    = string.Format( "{0}", hrtrate  );
+                                        ds.Altitude     = string.Format( "{0}", enhaltitude );
+                                        ds.Temperature  = string.Format( "{0}", temperature );
+
+                                        m_Data.Add( ds );
+                                        m_LineNr++;
+                                        break;
+
+                                    case "deviceinfo":
+                                            timestmp  = e.mesg.GetFieldValue ( "Timestamp" );       
+                                        var cumopertm = e.mesg.GetFieldValue ( "CumOperatingTime" );       
+                                        var serialnr  = e.mesg.GetFieldValue ( "SerialNumber" );       
+                                        var manufct   = e.mesg.GetFieldValue ( "Manufacturer" );       
+                                        var poduct    = e.mesg.GetFieldValue ( "Product" );       
+                                            swvers    = e.mesg.GetFieldValue ( "SoftwareVersion" );       
+                                        var devidx    = e.mesg.GetFieldValue ( "DeviceIndex" );       
+                                        var antntwk   = e.mesg.GetFieldValue ( "AntNetwork" );       
+                                        var srcetyp   = e.mesg.GetFieldValue ( "SourceType" );       
+                                        break;
+
+                                    case "devicesettings":
+                                        var utcoffs       = e.mesg.GetFieldValue ( "UtcOffset" );
+                                        var timeoffs      = e.mesg.GetFieldValue ( "TimeOffset" );
+                                        var atosynmnstps  = e.mesg.GetFieldValue ( "AutosyncMinSteps" );
+                                        var atosyntmmintm = e.mesg.GetFieldValue ( "AutosyncMinTime" );
+                                        var acttmzone     = e.mesg.GetFieldValue ( "ActiveTimeZone" );
+                                        var timemode      = e.mesg.GetFieldValue ( "TimeMode" );
+                                        var timzoneoffs   = e.mesg.GetFieldValue ( "TimeZoneOffset" );
+                                        var bcklghtmde    = e.mesg.GetFieldValue ( "BacklightMode" );
+                                        var acttrackenab  = e.mesg.GetFieldValue ( "ActivityTrackerEnabled" );
+                                        var datemode      = e.mesg.GetFieldValue ( "DateMode" );
+                                        break;
+
+                                    case "userprofile":
+                                        var fndlynme      = e.mesg.GetFieldValue ( "FriendlyName" ); 
+                                        var waketime      = e.mesg.GetFieldValue ( "WakeTime" );
+                                        var sleeptime     = e.mesg.GetFieldValue ( "SleepTime" );
+                                        var weight        = e.mesg.GetFieldValue ( "Weight" );
+                                        var gender        = e.mesg.GetFieldValue ( "Gender" );
+                                        var age           = e.mesg.GetFieldValue ( "Age" );
+                                        var height        = e.mesg.GetFieldValue ( "Height" );
+                                        var language      = e.mesg.GetFieldValue ( "Language" );
+                                        var elevsettngs   = e.mesg.GetFieldValue ( "ElevSetting" );
+                                        var weightsttngs  = e.mesg.GetFieldValue ( "WeightSetting" );
+                                        var restheartrte  = e.mesg.GetFieldValue ( "RestingHeartRate" );
+                                        var defmxbikehr   = e.mesg.GetFieldValue ( "DefaultMaxBikingHeartRate" );
+                                        var defmxhr       = e.mesg.GetFieldValue ( "DefaultMaxHeartRate" );
+                                        var hrsettngs     = e.mesg.GetFieldValue ( "HrSetting" );
+                                        var speedsttngs   = e.mesg.GetFieldValue ( "SpeedSetting" );
+                                        var diststtngs    = e.mesg.GetFieldValue ( "DistSetting" );
+                                        var powsttngs     = e.mesg.GetFieldValue ( "PowerSetting" );
+                                        var activityclss  = e.mesg.GetFieldValue ( "ActivityClass" );
+                                        var possttngs     = e.mesg.GetFieldValue ( "PositionSetting" );
+                                        var tempsttngs    = e.mesg.GetFieldValue ( "TemperatureSetting" );
+                                        var heightsttngs  = e.mesg.GetFieldValue ( "HeightSetting" );
+                                        break;
+
+                                    case "sport":
+                                        var name      = e.mesg.GetFieldValue ( "Name" );
+                                            sport     = e.mesg.GetFieldValue ( "Sport" );
+                                            subsport  = e.mesg.GetFieldValue ( "SubSport" );
+                                        break;
+
+                                    case "trainingsettings":
+                                        break;
+
+                                    case "zonestarget":
+                                        var fntthrshpow   = e.mesg.GetFieldValue ( "FunctionalThresholdPower" );
+                                        var hrcalctype    = e.mesg.GetFieldValue ( "HrCalcType" );
+                                        var pwrcalctype   = e.mesg.GetFieldValue ( "PwrCalcType" );
+                                        break;
+
+                                    case "hrv":
+                                        time  = e.mesg.GetFieldValue ( "Time" );
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                            };
+
+                            decode.MesgEvent += broadcaster.OnMesg;
+                            decode.Read( fitFile );
+                        }
+                        break;
+
+                    default:
+                        rdr = new StreamReader( a_Fname );
+                        string line = "";
+
+                        while( !rdr.EndOfStream )
+                        {
+                            line = rdr.ReadLine();
+
+                            if (m_LineNr == 0)
+                            {
+                                ParseCols( line );
+                                m_LineNr++;
+                                continue;
+                            }
+
+                            ParseLine( line );
+
+                            m_LineNr++;
+                        }
+                        break;
                 }
 
-                ShowInList();
+                ShowInList( a_Fit );
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
                 MessageBox.Show("Error parsing line " + m_LineNr, "Import error");
             }
             finally
             {
-                rdr.Close();
+                if (rdr != null) rdr.Close();
             }
         }
 
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   24.04.2019
+        LAST CHANGE:   14.10.2020
         ***************************************************************************/
         private bool ParseLine( string a_Line )
         {
@@ -189,9 +453,9 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   01.05.2018
+        LAST CHANGE:   20.06.2025
         ***************************************************************************/
-        private void ShowInList()
+        private void ShowInList( bool a_Fit = false )
         {
             m_OutList.Clear();
 
@@ -199,7 +463,7 @@ namespace BikeTourImport
 
             foreach( DataStruct ds in m_Data )
             {
-                m_OutList.AddLine( ds.GetLine() );
+                m_OutList.AddLine( ds.GetLine( a_Fit ) );
             }
 
             m_OutList.Refresh();
@@ -208,50 +472,72 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       22.07.2018
-        LAST CHANGE:   24.04.2019
+        LAST CHANGE:   20.06.2025
         ***************************************************************************/
-        public void Calculate()
+        public void Calculate( bool a_Fit = false )
         {
-            int    accp = 0;
-            int    accn = 0;
-            int    acc  = 0;
-            int    amax = -32000;
-            int    amin =  32000;
-            int    offs = 0;
+            double accp = 0;
+            double accn = 0;
+            double amax = -32000;
+            double amin =  32000;
             double dist = 0.0;
+            double ac   = 0;
+            double pv   = 0;
+            bool   init = true;
 
-            bool init = true;
+            DataStruct prv = null;
 
-            foreach( DataStruct ds in m_Data )
+            try
             {
-                if( init )
+                foreach( DataStruct ds in m_Data )
                 {
-                    init = false;
-                    acc  = ds.iAltitude;
-                    offs = acc;
-                    continue;
-                }
+                    if( init )
+                    {
+                        init = false;
+                        prv  = ds;
+                        continue;
+                    }
                 
-                int ac = ds.iAltitude;
-                if (ac > amax) amax = ac;
-                if (ac < amin) amin = ac;
+                    if ( a_Fit )
+                    {
+                        ac = ds .dAltitude;
+                        pv = prv.dAltitude;
+                    }
+                    else
+                    {
+                        ac = (double)ds .iAltitude;
+                        pv = (double)prv.iAltitude;
+                    }
 
-                if (ac > acc+1) accp += ac-acc;
-                if (ac < acc-1) accn += acc-ac;
-                acc = ac;
+                    if( ds.dSpeed == 0.0 ) continue;
+
+                    if (ac > amax) amax = ac;
+                    if (ac < amin) amin = ac;
+
+                    if ( pv > ac  ) accn += ( pv - ac );
+                    if ( pv < ac  ) accp += ( ac - pv );
+
+                    prv = ds;
+                }
+
+                if ( m_Data.Count < 1 ) return;
+
+                DataStruct td_last = m_Data[m_Data.Count-1];
+                DataStruct td_frst = m_Data[0];
+
+                m_Statcs.AltMax    = amax;
+                m_Statcs.AltMin    = amin;
+                m_Statcs.Ascent    = accp;
+                m_Statcs.Descent   = accn;
+                dist               = Utils.Str2Double( td_last.Distance );
+                m_Statcs.Distnce   = dist / 1000;
+                m_Statcs.TimeStart = Convert.ToDateTime( td_frst.Date + " " + td_frst.Time );
+                m_Statcs.TimeStop  = Convert.ToDateTime( td_last.Date + " " + td_last.Time );
             }
-
-            DataStruct td_last = m_Data[m_Data.Count-1];
-            DataStruct td_frst = m_Data[0];
-
-            m_Statcs.AltMax    = amax;
-            m_Statcs.AltMin    = amin;
-            m_Statcs.Ascent    = accp - offs;
-            m_Statcs.Descent   = accn - offs;
-            dist               = Utils.Str2Double( td_last.Distance );
-            m_Statcs.Distnce   = dist / 1000;
-            m_Statcs.TimeStart = Convert.ToDateTime( td_frst.Date + " " + td_frst.Time );
-            m_Statcs.TimeStop  = Convert.ToDateTime( td_last.Date + " " + td_last.Time );
+            catch( Exception ex )
+            {
+                MessageBox.Show( ex.Message + "\nDataSet: " + prv.GetLine( a_Fit ), "Calculate exception in data set: " );
+            }
         }
 
         /***************************************************************************
@@ -281,7 +567,7 @@ namespace BikeTourImport
         CREATED:       02.09.2018
         LAST CHANGE:   02.09.2018
         ***************************************************************************/
-        private void Output( string a_Name, DateTime a_Val )
+        private void Output( string a_Name, System.DateTime a_Val )
         {
             OutName( a_Name );
             m_RTB.Output(string.Format("{0} {1}\n", a_Val, a_Val.DayOfWeek ) , Color.Green, false );
@@ -330,7 +616,7 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       28.08.2018
-        LAST CHANGE:   27.06.2019
+        LAST CHANGE:   01.06.2025
         ***************************************************************************/
         public void Export2XL( string a_Fname, string a_Title, string a_Odo )
         {
@@ -340,9 +626,11 @@ namespace BikeTourImport
 
             List<XlCell> lst = new List<XlCell>();
             lst.Add( new XlCell( a_Title, "" ) );
-            lst.Add( new XlCell( string.Format( "{0:dd.MMM.yyyy}", m_Statcs.TimeStart.Date ), "dd.MMM.yyyy" ) );
+            lst.Add( new XlCell( string.Format( "{0:dd. MMM. yyyy}", m_Statcs.TimeStart.Date ), "dd. MMM. yyyy" ) );
             lst.Add( new XlCell( "" ) );
             lst.Add( new XlCell( string.Format( "{0:00}:{1:00}", m_Statcs.TimeStart.Hour, m_Statcs.TimeStart.Minute ), "HH:mm" ) );
+            lst.Add( new XlCell( string.Format( "{0:00}:{1:00}", m_Statcs.TimeStop .Hour, m_Statcs.TimeStop .Minute ), "HH:mm" ) );
+            lst.Add( new XlCell( "" ) );
             lst.Add( new XlCell( string.Format( "{0}", a_Odo ) ) );
             lst.Add( new XlCell( "" ) );
             lst.Add( new XlCell( "" ) );
@@ -353,6 +641,7 @@ namespace BikeTourImport
             lst.Add( new XlCell( string.Format( dist ), "@" ) );
             lst.Add( new XlCell( string.Format( "{0}", m_Statcs.Ascent ), "@" ) );
             m_XlExp.AppendLine( lst, 0, true );
+            m_XlExp.SaveExcel( );
         }
 
     } // class

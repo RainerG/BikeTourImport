@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
+using Dynastream.Fit;
+
 using NS_UserCombo;
 using NS_Utilities;
 using NS_AppConfig;
@@ -19,19 +21,20 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   24.04.2019
+        LAST CHANGE:   29.05.2025
         ***************************************************************************/
+        private const int    DB_VERSION = 377;
         private const string APPNAME    = "BikeTourImport.ini";
         private const string EXPORTXL   = "D:\\data\\DOCS\\Bike\\Radtouren\\KMundHM.xlsm";
         private const string ODOMETER   = "CM9.3A";
-        private const string RELEASE    = "Release: 1.00 RC1";
-        private const int    DB_VERSION = 150;
+        private const string RELEASE    = "Release: 1.00 RC2";
 
 
         private string      m_Filename;
         private string      m_ExpFileNm;
         private AppSettings m_Config;
         private TourData    m_Data;
+        private bool        m_Fit;
 
         /***************************************************************************
         SPECIFICATION: C'tor
@@ -46,6 +49,7 @@ namespace BikeTourImport
             m_Data       = new TourData( userRichTextBox );
             m_Filename   = "none";
             m_ExpFileNm  = "none";
+            m_Fit        = false;
 
             fileCmbTour  .DragDir = false;
             fileCmbExport.DragDir = false;
@@ -144,7 +148,7 @@ namespace BikeTourImport
         ***************************************************************************/
         private void btnTourBrwse_Click( object sender, EventArgs e )
         {
-            DialogResult dlg = fileCmbTour.BrowseFileRead("CSV files (*.csv)|*.csv|All files (*.*)|*.*");
+            DialogResult dlg = fileCmbTour.BrowseFileRead( "CSV files (*.csv)|*.csv|FIT files (*.fit)|*.fit|All files (*.*)|*.*" );
 
             if (dlg != DialogResult.OK) return;
 
@@ -169,15 +173,19 @@ namespace BikeTourImport
         private void btnImport_Click( object sender, EventArgs e )
         {
             m_Filename = fileCmbTour.Text;
-            m_Data.Import( m_Filename );
-            m_Data.Calculate();
+            string ext = Utils.GetExtension( m_Filename ).ToLower();
+            m_Fit = ( ext == "fit" );
+            m_Data.Import( m_Filename, m_Fit );
+            m_Data.Calculate( m_Fit );
             m_Data.ShowData();
+
+            ShowTitle( m_Filename );
         }
 
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       06.05.2019
-        LAST CHANGE:   06.05.2019
+        LAST CHANGE:   13.06.2025
         ***************************************************************************/
         private void btnRenFile_Click( object sender, EventArgs e )
         {
@@ -185,13 +193,15 @@ namespace BikeTourImport
             {
                 m_Filename = fileCmbTour.Text;
 
-                if ( ! File.Exists(m_Filename) )
+                if ( ! System.IO.File.Exists(m_Filename) )
                 {
                     MessageBox.Show(m_Filename + " does not exist","File error");
                     return;
                 }
 
                 string fnbody = Utils.GetFilenameBody(m_Filename);
+                List<string> segs = Utils.SplitExt(fnbody,"_");
+                fnbody = segs[0];
                 string newfn  = userCmbTitle.Text.Replace(" ","_");
 
                 if( m_Filename.Contains( newfn ) )
@@ -208,7 +218,10 @@ namespace BikeTourImport
 
                 newfn = fnbody + "_" + newfn;
 
-                m_Filename = m_Filename.Replace( fnbody, newfn );
+                string ext = "." + Utils.GetExtension( m_Filename );
+                m_Filename = m_Filename = Utils.GetPath( m_Filename );
+                m_Filename = Utils.ConcatPaths( m_Filename, newfn );
+                m_Filename = m_Filename + ext;
                 fileCmbTour.Text = m_Filename;
 
                 string dir    = Utils.GetPath( m_Filename );
@@ -221,7 +234,7 @@ namespace BikeTourImport
                         FileInfo fi = new FileInfo(fl);
                         if (fi.Exists)
                         {
-                            string ext = "." + Utils.GetExtension(fl);
+                            ext = "." + Utils.GetExtension(fl);
                             fi.MoveTo( Utils.ConcatPaths(dir,newfn) + ext );
                         }
                     }
@@ -250,7 +263,7 @@ namespace BikeTourImport
                 return;
             }
 
-            if (! File.Exists( m_ExpFileNm ) )
+            if (! System.IO.File.Exists( m_ExpFileNm ) )
             {
                 MessageBox.Show( "File " + m_ExpFileNm + " does not exist", "File not found" );
                 return;
@@ -287,12 +300,12 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       22.07.2018
-        LAST CHANGE:   24.04.2019
+        LAST CHANGE:   20.06.2025
         ***************************************************************************/
         private void btnCalc_Click( object sender, EventArgs e )
         {
             AddTextEntries();
-            m_Data.Calculate();
+            m_Data.Calculate( m_Fit );
             m_Data.ShowData ();
         }
 
@@ -316,6 +329,47 @@ namespace BikeTourImport
         {
             About dlg = new About( RELEASE );
             dlg.ShowDialog();
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       14.10.2019
+        LAST CHANGE:   14.10.2019
+        ***************************************************************************/
+        private void ShowTitle( string a_Filename )
+        {
+            string fname = Utils.GetFilenameBody(a_Filename);
+            List<string> segs = Utils.SplitExt( fname, "_-" );
+            if ( segs.Count <= 6 ) return;
+            segs.RemoveRange(0,6);
+
+            List<string> ttls = new List<string>();
+            foreach( string ttl in userCmbTitle.Items ) ttls.Add( ttl );
+
+            foreach( string ts in ttls )
+            {
+                bool found = true;
+
+                List<string> tsegs = Utils.SplitExt( ts, " " );
+
+                if (tsegs.Count != segs.Count ) continue;
+
+                foreach( string tsg in tsegs )
+                {
+                    string f = segs.Find( s => s == tsg );
+                    if ( f == null )
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if ( found )
+                {
+                    userCmbTitle.Text = ts;
+                    return;
+                }
+            }
         }
     }
 }

@@ -17,9 +17,11 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: Accessors
         CREATED:       22.07.2018
-        LAST CHANGE:   22.07.2018
+        LAST CHANGE:   20.06.2025
         ***************************************************************************/
-        public int iAltitude { get { return Utils.Str2Int(ConvertNeg(Altitude)); } }
+        public int    iAltitude { get { return Utils.Str2Int(ConvertNeg(Altitude)); } }
+        public double dAltitude { get { return Utils.Str2Double(Altitude); } }
+        public double dSpeed    { get { return Utils.Str2Double(Speed); } }
 
         /***************************************************************************
         SPECIFICATION: Members
@@ -40,14 +42,24 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: C'tors
         CREATED:       01.05.2018
-        LAST CHANGE:   20.05.2018
+        LAST CHANGE:   20.06.2025
         ***************************************************************************/
         public DataStruct()
         {
-
+            Date            = "";
+            Time            = "";
+            Distance        = "";
+            Speed           = "";
+            HeartRate       = "";
+            Cadence         = "";
+            Power           = "";
+            RightPedalPower = "";
+            Altitude        = "";
+            Temperature     = "";
         }
 
         public DataStruct( List<string> a_Data )
+            : this()
         {
             int i=0;
             if (a_Data.Count < 10) return;
@@ -73,7 +85,7 @@ namespace BikeTourImport
         {
             if (a_Val == null) return "null";
 
-            uint val = Utils.Str2UInt( a_Val );
+            int val = Utils.Str2Int( a_Val );
             if ( val > 0x7fff ) val -= 0x10000;
             return string.Format( "{0}", (int)val );
         }
@@ -96,22 +108,32 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   03.08.2018
+        LAST CHANGE:   24.06.2025
         ***************************************************************************/
-        public List<string> GetLine()
+        public List<string> GetLine( bool a_Fit = false )
         {
             List<string> ret = new List<string>();
+
+            //double spd = Utils.Str2Double(Speed);
+            //Speed = ( spd * 3.6 ).ToString("0.00");
 
             ret.Add(Date      );
             ret.Add(Time      );
             ret.Add(Distance  );
             ret.Add(Speed     );
             ret.Add(HeartRate );
-            ret.Add( ConvertNons( Cadence ) );
-            ret.Add(Power     );
-            //ret.Add(RightPedalPower);
-            ret.Add( ConvertNeg (Altitude) );
-            ret.Add( ConvertNeg (Temperature) );
+            if (a_Fit)
+            {
+                ret.Add( Altitude );
+                ret.Add( Temperature );
+            }
+           else
+            {
+                ret.Add( ConvertNons( Cadence ) );
+                ret.Add(Power     );
+                ret.Add( ConvertNeg( Altitude ) );
+                ret.Add( ConvertNeg(Temperature) );
+            }
 
             return ret;
         }
