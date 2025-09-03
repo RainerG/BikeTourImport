@@ -27,7 +27,7 @@ namespace BikeTourImport
         private const string APPNAME    = "BikeTourImport.ini";
         private const string EXPORTXL   = "D:\\data\\DOCS\\Bike\\Radtouren\\KMundHM.xlsm";
         private const string ODOMETER   = "CM9.3A";
-        private const string RELEASE    = "Release: 1.00 RC2";
+        private const string RELEASE    = "Release: 1.00 RC3";
 
 
         private string      m_Filename;
@@ -39,7 +39,7 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: C'tor
         CREATED:       30.04.2018
-        LAST CHANGE:   01.04.2019
+        LAST CHANGE:   04.09.2025
         ***************************************************************************/
         public BikeImport()
         {
@@ -54,9 +54,11 @@ namespace BikeTourImport
             fileCmbTour  .DragDir = false;
             fileCmbExport.DragDir = false;
 
-            userCmbOdo.Text = ODOMETER+" M";
-            userCmbOdo.Items.Add(ODOMETER + " C");
-            userCmbOdo.Items.Add(ODOMETER + " M");
+            userCmbOdo.Text = "Edge 200";
+            userCmbOdo.Items.Add( "Edge 200" );
+            userCmbOdo.Items.Add( "Sigma Rox" );
+            userCmbOdo.Items.Add( ODOMETER + " C" );
+            userCmbOdo.Items.Add( ODOMETER + " M");
 
             fileCmbExport.Text = EXPORTXL;
         }
@@ -148,7 +150,7 @@ namespace BikeTourImport
         ***************************************************************************/
         private void btnTourBrwse_Click( object sender, EventArgs e )
         {
-            DialogResult dlg = fileCmbTour.BrowseFileRead( "CSV files (*.csv)|*.csv|FIT files (*.fit)|*.fit|All files (*.*)|*.*" );
+            DialogResult dlg = fileCmbTour.BrowseFileRead( "FIT files (*.fit)|*.fit|CSV files (*.csv)|*.csv|All files (*.*)|*.*" );
 
             if (dlg != DialogResult.OK) return;
 
@@ -177,7 +179,7 @@ namespace BikeTourImport
             m_Fit = ( ext == "fit" );
             m_Data.Import( m_Filename, m_Fit );
             m_Data.Calculate( m_Fit );
-            m_Data.ShowData();
+            m_Data.ShowData ( m_Fit );
 
             ShowTitle( m_Filename );
         }
@@ -185,7 +187,7 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       06.05.2019
-        LAST CHANGE:   13.06.2025
+        LAST CHANGE:   03.09.2025
         ***************************************************************************/
         private void btnRenFile_Click( object sender, EventArgs e )
         {
@@ -202,7 +204,7 @@ namespace BikeTourImport
                 string fnbody = Utils.GetFilenameBody(m_Filename);
                 List<string> segs = Utils.SplitExt(fnbody,"_");
                 fnbody = segs[0];
-                string newfn  = userCmbTitle.Text.Replace(" ","_");
+                string newfn  = userCmbTitle.Text.Trim().Replace(" ","_");
 
                 if( m_Filename.Contains( newfn ) )
                 {

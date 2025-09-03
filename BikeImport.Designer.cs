@@ -35,16 +35,16 @@
             this.btnExpBrwse = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.btnCalc = new System.Windows.Forms.Button();
-            this.userRichTextBox = new NS_Utilities.UserRichTextBox();
-            this.fileCmbExport = new NS_UserCombo.FileComboBox();
-            this.fileCmbTour = new NS_UserCombo.FileComboBox();
-            this.userCmbTitle = new NS_UserCombo.UserComboBox();
             this.btnEditExport = new System.Windows.Forms.Button();
-            this.userCmbOdo = new NS_UserCombo.UserComboBox();
             this.btnRenFile = new System.Windows.Forms.Button();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.userCmbOdo = new NS_UserCombo.UserComboBox();
+            this.userCmbTitle = new NS_UserCombo.UserComboBox();
+            this.userRichTextBox = new NS_Utilities.UserRichTextBox();
+            this.fileCmbExport = new NS_UserCombo.FileComboBox();
+            this.fileCmbTour = new NS_UserCombo.FileComboBox();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,58 +90,12 @@
             this.btnCalc.UseVisualStyleBackColor = true;
             this.btnCalc.Click += new System.EventHandler(this.btnCalc_Click);
             // 
-            // userRichTextBox
-            // 
-            resources.ApplyResources(this.userRichTextBox, "userRichTextBox");
-            this.userRichTextBox.Name = "userRichTextBox";
-            // 
-            // fileCmbExport
-            // 
-            this.fileCmbExport.AllowDrop = true;
-            resources.ApplyResources(this.fileCmbExport, "fileCmbExport");
-            this.fileCmbExport.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.fileCmbExport.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
-            this.fileCmbExport.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.fileCmbExport.FormattingEnabled = true;
-            this.fileCmbExport.Name = "fileCmbExport";
-            this.fileCmbExport.ReadOnly = false;
-            // 
-            // fileCmbTour
-            // 
-            this.fileCmbTour.AllowDrop = true;
-            resources.ApplyResources(this.fileCmbTour, "fileCmbTour");
-            this.fileCmbTour.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.fileCmbTour.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
-            this.fileCmbTour.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.fileCmbTour.FormattingEnabled = true;
-            this.fileCmbTour.Name = "fileCmbTour";
-            this.fileCmbTour.ReadOnly = false;
-            // 
-            // userCmbTitle
-            // 
-            resources.ApplyResources(this.userCmbTitle, "userCmbTitle");
-            this.userCmbTitle.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.userCmbTitle.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.userCmbTitle.FormattingEnabled = true;
-            this.userCmbTitle.Name = "userCmbTitle";
-            this.userCmbTitle.ReadOnly = false;
-            this.userCmbTitle.Sorted = true;
-            // 
             // btnEditExport
             // 
             resources.ApplyResources(this.btnEditExport, "btnEditExport");
             this.btnEditExport.Name = "btnEditExport";
             this.btnEditExport.UseVisualStyleBackColor = true;
             this.btnEditExport.Click += new System.EventHandler(this.btnEditExport_Click);
-            // 
-            // userCmbOdo
-            // 
-            resources.ApplyResources(this.userCmbOdo, "userCmbOdo");
-            this.userCmbOdo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.userCmbOdo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.userCmbOdo.FormattingEnabled = true;
-            this.userCmbOdo.Name = "userCmbOdo";
-            this.userCmbOdo.ReadOnly = false;
             // 
             // btnRenFile
             // 
@@ -170,6 +124,56 @@
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             resources.ApplyResources(this.aboutToolStripMenuItem, "aboutToolStripMenuItem");
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // userCmbOdo
+            // 
+            resources.ApplyResources(this.userCmbOdo, "userCmbOdo");
+            this.userCmbOdo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.userCmbOdo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.userCmbOdo.FormattingEnabled = true;
+            this.userCmbOdo.Name = "userCmbOdo";
+            this.userCmbOdo.ReadOnly = false;
+            this.userCmbOdo.Txt = "";
+            // 
+            // userCmbTitle
+            // 
+            resources.ApplyResources(this.userCmbTitle, "userCmbTitle");
+            this.userCmbTitle.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.userCmbTitle.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.userCmbTitle.FormattingEnabled = true;
+            this.userCmbTitle.Name = "userCmbTitle";
+            this.userCmbTitle.ReadOnly = false;
+            this.userCmbTitle.Sorted = true;
+            this.userCmbTitle.Txt = "Name of the tour";
+            // 
+            // userRichTextBox
+            // 
+            resources.ApplyResources(this.userRichTextBox, "userRichTextBox");
+            this.userRichTextBox.Name = "userRichTextBox";
+            // 
+            // fileCmbExport
+            // 
+            this.fileCmbExport.AllowDrop = true;
+            resources.ApplyResources(this.fileCmbExport, "fileCmbExport");
+            this.fileCmbExport.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.fileCmbExport.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
+            this.fileCmbExport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.fileCmbExport.FormattingEnabled = true;
+            this.fileCmbExport.Name = "fileCmbExport";
+            this.fileCmbExport.ReadOnly = false;
+            this.fileCmbExport.Txt = "";
+            // 
+            // fileCmbTour
+            // 
+            this.fileCmbTour.AllowDrop = true;
+            resources.ApplyResources(this.fileCmbTour, "fileCmbTour");
+            this.fileCmbTour.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.fileCmbTour.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
+            this.fileCmbTour.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.fileCmbTour.FormattingEnabled = true;
+            this.fileCmbTour.Name = "fileCmbTour";
+            this.fileCmbTour.ReadOnly = false;
+            this.fileCmbTour.Txt = "";
             // 
             // BikeImport
             // 

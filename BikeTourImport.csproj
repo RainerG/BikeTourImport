@@ -67,7 +67,7 @@
     <Compile Include="BikeImport.Designer.cs">
       <DependentUpon>BikeImport.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataStruct.cs" />
+    <Compile Include="DataStructs.cs" />
     <Compile Include="OutputList.cs">
       <SubType>Form</SubType>
     </Compile>
