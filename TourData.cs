@@ -22,9 +22,16 @@ namespace BikeTourImport
     class TourData
     {
         /***************************************************************************
+        SPECIFICATION: Accessors
+        CREATED:       06.09.2025
+        LAST CHANGE:   06.09.2025
+        ***************************************************************************/
+        public OutputList OutList { get { return m_OutList; } }
+
+        /***************************************************************************
         SPECIFICATION: Members
         CREATED:       01.05.2018
-        LAST CHANGE:   01.05.2018
+        LAST CHANGE:   06.09.2025
         ***************************************************************************/
         private int               m_LineNr;
         private List<Record>      m_Recs;
@@ -34,13 +41,14 @@ namespace BikeTourImport
         private WordExcelExport   m_XlExp;
         private Statistics        m_Statcs;
         private UserRichTextBox   m_RTB;
+        private Preferences       m_Prefs;
 
         /***************************************************************************
         SPECIFICATION: C'tor
         CREATED:       01.05.2018
-        LAST CHANGE:   02.09.2025
+        LAST CHANGE:   06.09.2025
         ***************************************************************************/
-        public TourData( UserRichTextBox a_RTB )
+        public TourData( UserRichTextBox a_RTB, Preferences a_Prefs )
         {
             m_RTB     = a_RTB;
             m_LineNr  = 0;
@@ -49,6 +57,7 @@ namespace BikeTourImport
             m_OutList = new OutputList();
             m_XlExp   = m_OutList.WdXlExport;
             m_Statcs  = new Statistics();
+            m_Prefs   = a_Prefs;
 
             List<NumFormat> frmts = m_XlExp.NumFrmts;
             frmts.Add( new NumFormat( 1,"yyyy.mm.dd") );
@@ -59,24 +68,35 @@ namespace BikeTourImport
             frmts.Add( new NumFormat( 6,"@") );
             frmts.Add( new NumFormat( 7,"@") );
             frmts.Add( new NumFormat( 8,"@") );
-            frmts.Add( new NumFormat( 9,"@") );
 
             List<ChartFormat> chrts = m_XlExp.ChrtFrmts;
             chrts.Add( new ChartFormat( 2, 3, Excel.XlRgbColor.rgbGreen ));       // Distance
-            chrts.Add( new ChartFormat( 2, 8, Excel.XlRgbColor.rgbBrown ));       // Altitude
-            chrts.Add( new ChartFormat( 2, 5, Excel.XlRgbColor.rgbBlueViolet ));  // Heart rate
+            chrts.Add( new ChartFormat( 2, 7, Excel.XlRgbColor.rgbBrown ));       // Altitude
+            chrts.Add( new ChartFormat( 2, 6, Excel.XlRgbColor.rgbBlueViolet ));  // Heart rate
             chrts.Add( new ChartFormat( 2, 4, Excel.XlRgbColor.rgbViolet ));      // Speed
-            chrts.Add( new ChartFormat( 2, 6, Excel.XlRgbColor.rgbBlueViolet ));  // Cadence
-            chrts.Add( new ChartFormat( 2, 7, Excel.XlRgbColor.rgbRed ));         // Power 
-            chrts.Add( new ChartFormat( 2, 9, Excel.XlRgbColor.rgbOrange ));      // Temp
+            chrts.Add( new ChartFormat( 2, 5, Excel.XlRgbColor.rgbBlueViolet ));  // Cadence
+            chrts.Add( new ChartFormat( 2, 8, Excel.XlRgbColor.rgbOrange ));      // Temp
 
-            chrts.Add( new ChartFormat( 3, 2, Excel.XlRgbColor.rgbGreen ));       // Time
-            chrts.Add( new ChartFormat( 3, 8, Excel.XlRgbColor.rgbBrown ));       // Altitude
-            chrts.Add( new ChartFormat( 3, 5, Excel.XlRgbColor.rgbBlueViolet ));  // Heart rate
-            chrts.Add( new ChartFormat( 3, 4, Excel.XlRgbColor.rgbViolet ));      // Speed
-            chrts.Add( new ChartFormat( 3, 6, Excel.XlRgbColor.rgbBlueViolet ));  // Cadence
-            chrts.Add( new ChartFormat( 3, 7, Excel.XlRgbColor.rgbRed ));         // Power 
-            chrts.Add( new ChartFormat( 3, 9, Excel.XlRgbColor.rgbOrange ));      // Temp
+            //chrts.Add( new ChartFormat( 3, 2, Excel.XlRgbColor.rgbGreen ));       // Time
+            //chrts.Add( new ChartFormat( 3, 7, Excel.XlRgbColor.rgbBrown ));       // Altitude
+            //chrts.Add( new ChartFormat( 3, 6, Excel.XlRgbColor.rgbBlueViolet ));  // Heart rate
+            //chrts.Add( new ChartFormat( 3, 4, Excel.XlRgbColor.rgbViolet ));      // Speed
+            //chrts.Add( new ChartFormat( 3, 5, Excel.XlRgbColor.rgbBlueViolet ));  // Cadence
+            //chrts.Add( new ChartFormat( 3, 8, Excel.XlRgbColor.rgbOrange ));      // Temp
+
+            //chrts.Add( new ChartFormat( "Time", "Dist"  , Excel.XlRgbColor.rgbGreen ));      
+            //chrts.Add( new ChartFormat( "Time", "Alti"  , Excel.XlRgbColor.rgbBrown ));      
+            //chrts.Add( new ChartFormat( "Time", "Heart" , Excel.XlRgbColor.rgbBlueViolet )); 
+            //chrts.Add( new ChartFormat( "Time", "Speed" , Excel.XlRgbColor.rgbViolet ));     
+            //chrts.Add( new ChartFormat( "Time", "Caden" , Excel.XlRgbColor.rgbBlueViolet )); 
+            //chrts.Add( new ChartFormat( "Time", "Temp"  , Excel.XlRgbColor.rgbOrange ));     
+
+            //chrts.Add( new ChartFormat( "Dist", "Time"  , Excel.XlRgbColor.rgbGreen ));      
+            //chrts.Add( new ChartFormat( "Dist", "Alti"  , Excel.XlRgbColor.rgbBrown ));      
+            //chrts.Add( new ChartFormat( "Dist", "Heart" , Excel.XlRgbColor.rgbBlueViolet )); 
+            //chrts.Add( new ChartFormat( "Dist", "Speed" , Excel.XlRgbColor.rgbViolet ));     
+            //chrts.Add( new ChartFormat( "Dist", "Caden" , Excel.XlRgbColor.rgbBlueViolet )); 
+            //chrts.Add( new ChartFormat( "Dist", "Temp"  , Excel.XlRgbColor.rgbOrange ));     
 
         }
 
@@ -101,13 +121,14 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   02.09.20256
+        LAST CHANGE:   06.09.2025
         ***************************************************************************/
         public void Import( string a_Fname, bool a_Fit = false )
         {
             StreamReader rdr = null;
             m_Recs.Clear();
             m_LineNr = 0;
+            System.DateTime lasttime = new System.DateTime();
 
             try
             {
@@ -124,13 +145,14 @@ namespace BikeTourImport
                             MesgBroadcaster broadcaster = new MesgBroadcaster();
 
                             m_Cols = new List<string>();
-                            m_Cols.Add("Date");
-                            m_Cols.Add("Time");
-                            m_Cols.Add("Distance");
-                            m_Cols.Add("Speed");
-                            m_Cols.Add("HeartRate");
-                            m_Cols.Add("Altitude");
-                            m_Cols.Add("Temperature");
+                            m_Cols.Add( "Date" );
+                            m_Cols.Add( "Time" );
+                            m_Cols.Add( "Distance" );
+                            m_Cols.Add( "Speed" );
+                            m_Cols.Add( "Cadence" );
+                            m_Cols.Add( "HeartRate" );
+                            m_Cols.Add( "Altitude" );
+                            m_Cols.Add( "Temperature" );
 
                             broadcaster.MesgEvent += ( sender, e ) =>
                             {
@@ -278,6 +300,8 @@ namespace BikeTourImport
                                         m_Lap.Sport       = (byte) sport    ;
                                         m_Lap.SetStartTime( (uint) starttm );
                                         m_Lap.SetTotTime  ( (float)totelpsdtm );
+
+                                        lasttime = m_Lap.TimeStart;
                                         break;
 
                                     case "event":
@@ -293,17 +317,25 @@ namespace BikeTourImport
                                             distance    = e.mesg.GetFieldValue ( "Distance" );       
                                         var poslat      = e.mesg.GetFieldValue ( "PositionLat" );       
                                         var poslong     = e.mesg.GetFieldValue ( "PositionLong" );       
-                                        var enhaltitude = e.mesg.GetFieldValue ( "EnhancedAltitude" );       
-                                        var hrtrate     = e.mesg.GetFieldValue ( "HeartRate" );       
+                                        var enhaltitude = e.mesg.GetFieldValue ( "EnhancedAltitude" );
+                                        var hrtrate     = e.mesg.GetFieldValue ( "HeartRate" );
+                                        var cadence     = e.mesg.GetFieldValue ( "Cadence" );
+                                        var frctCdnce   = e.mesg.GetFieldValue ( "FractionalCadence" );
                                         var enhspeed    = e.mesg.GetFieldValue ( "EnhancedSpeed" );       
                                         var temperature = e.mesg.GetFieldValue ( "Temperature" );
 
                                         Record ds = new Record();
 
-                                        ds.Date         = string.Format( "{0}", new Dynastream.Fit.DateTime((uint)timestmp).GetDateTime().ToString( "yyyy-MM-dd" ) );
-                                        ds.Time         = string.Format( "{0}", new Dynastream.Fit.DateTime((uint)timestmp).GetDateTime().ToString( "HH:mm:ss" ) );
+                                        System.DateTime dt = new Dynastream.Fit.DateTime((uint)timestmp).GetDateTime();  dt = dt.AddHours(2);
+                                        TimeSpan        ts = dt - lasttime;
+                                        if ( ts.Seconds < m_Prefs.MinSmpleInt && dt != lasttime ) break;
+
+                                        lasttime        = dt;
+                                        ds.Date         = string.Format( "{0}", dt.ToString( "yyyy-MM-dd" ) );
+                                        ds.Time         = string.Format( "{0}", dt.ToString( "HH:mm:ss" ) );
                                         ds.Distance     = string.Format( "{0}", distance );
                                         ds.Speed        = string.Format( "{0}", enhspeed );
+                                        ds.Cadence      = string.Format( "{0}", cadence  );
                                         ds.HeartRate    = string.Format( "{0}", hrtrate  );
                                         ds.Altitude     = string.Format( "{0}", enhaltitude );
                                         ds.Temperature  = string.Format( "{0}", temperature );
@@ -706,6 +738,5 @@ namespace BikeTourImport
             m_XlExp.AppendLine( lst, 0, true );
             m_XlExp.SaveExcel( );
         }
-
     } // class
 } // namespace

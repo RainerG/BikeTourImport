@@ -68,8 +68,8 @@ namespace BikeTourImport
             Time            = a_Data[i++];
             Distance        = string.Format("{0}",Utils.Str2Double( a_Data[i++] ) / 1000 );
             Speed           = a_Data[i++].Replace(".",",");
-            HeartRate       = a_Data[i++];
             Cadence         = a_Data[i++];
+            HeartRate       = a_Data[i++];
             Power           = a_Data[i++];
             RightPedalPower = a_Data[i++];
             Altitude        = a_Data[i++];
@@ -108,7 +108,7 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   24.06.2025
+        LAST CHANGE:   06.09.2025
         ***************************************************************************/
         public List<string> GetLine( bool a_Fit = false )
         {
@@ -117,18 +117,20 @@ namespace BikeTourImport
             //double spd = Utils.Str2Double(Speed);
             //Speed = ( spd * 3.6 ).ToString("0.00");
 
-            ret.Add(Date      );
-            ret.Add(Time      );
-            ret.Add(Distance  );
-            ret.Add(Speed     );
-            ret.Add(HeartRate );
+            ret.Add( Date      );
+            ret.Add( Time      );
+            ret.Add( Distance  );
+            ret.Add( Speed     );
             if (a_Fit)
             {
-                ret.Add( Altitude );
+                ret.Add( Cadence   );
+                ret.Add( HeartRate );
+                ret.Add( Altitude  );
                 ret.Add( Temperature );
             }
            else
             {
+                ret.Add( HeartRate );
                 ret.Add( ConvertNons( Cadence ) );
                 ret.Add(Power     );
                 ret.Add( ConvertNeg( Altitude ) );
@@ -201,7 +203,7 @@ namespace BikeTourImport
         ***************************************************************************/
         public void SetStartTime( uint a_Time )
         {
-            DateTime fitEpoch = new DateTime( 1989, 12, 31, 2, 0, 0, DateTimeKind.Local );
+            System.DateTime fitEpoch = new System.DateTime( 1989, 12, 31, 2, 0, 0, DateTimeKind.Unspecified );
             fitEpoch  = fitEpoch.AddSeconds( (double)a_Time );
             StartTime = fitEpoch; //.ToString( "yyyy.mm.dd hh:mm:ss");
         }

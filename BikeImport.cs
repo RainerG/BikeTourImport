@@ -23,30 +23,46 @@ namespace BikeTourImport
         CREATED:       01.05.2018
         LAST CHANGE:   29.05.2025
         ***************************************************************************/
-        private const int    DB_VERSION = 377;
-        private const string APPNAME    = "BikeTourImport.ini";
+        private const int    DB_VERSION = 378;
+        private const string BASE_NAME  = "BikeTourImport";
+        private const string INI_FNAME  = BASE_NAME + ".ini";
         private const string EXPORTXL   = "D:\\data\\DOCS\\Bike\\Radtouren\\KMundHM.xlsm";
         private const string ODOMETER   = "CM9.3A";
-        private const string RELEASE    = "Release: 1.00 RC3";
+        private const string RELEASE    = "Release: 1.00 RC4";
 
 
+        /***************************************************************************
+        SPECIFICATION: Members
+        CREATED:       01.05.2018
+        LAST CHANGE:   06.09.2025
+        ***************************************************************************/
         private string      m_Filename;
         private string      m_ExpFileNm;
         private AppSettings m_Config;
         private TourData    m_Data;
         private bool        m_Fit;
+        private string      m_ExportFname;
+        private Preferences m_Prefs;
+        private Windows     m_Wins;
+
 
         /***************************************************************************
         SPECIFICATION: C'tor
         CREATED:       30.04.2018
-        LAST CHANGE:   04.09.2025
+        LAST CHANGE:   06.09.2025
         ***************************************************************************/
         public BikeImport()
         {
             InitializeComponent();
 
-            m_Config     = new AppSettings(APPNAME);
-            m_Data       = new TourData( userRichTextBox );
+            string sCurrDir = Directory.GetCurrentDirectory() + "\\";
+            m_Config = new AppSettings( sCurrDir + INI_FNAME );
+            m_ExportFname = sCurrDir + BASE_NAME + "_1.ini";
+
+            m_Config = new AppSettings(INI_FNAME);
+            m_Prefs  = new Preferences();
+            m_Data   = new TourData( userRichTextBox, m_Prefs );
+
             m_Filename   = "none";
             m_ExpFileNm  = "none";
             m_Fit        = false;
@@ -61,12 +77,15 @@ namespace BikeTourImport
             userCmbOdo.Items.Add( ODOMETER + " M");
 
             fileCmbExport.Text = EXPORTXL;
+
+            m_Wins = new Windows( this );
+            m_Wins.Wins.Add( new Window( m_Data.OutList ) );
         }
 
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   24.04.2019
+        LAST CHANGE:   06.09.2025
         ***************************************************************************/
         public void Serialize( ref AppSettings a_Conf )
         {
@@ -74,12 +93,19 @@ namespace BikeTourImport
             {
                 a_Conf.DeserializeDbVersion();
                 a_Conf.DeserializeDialog( this );
+                if (a_Conf.DbVersion > 377)
+                {
+                    m_ExportFname                         = a_Conf.Deserialize<string>();
+                    stickWindowsToolStripMenuItem.Checked = a_Conf.Deserialize<bool>();
+                }
             }
             else
             {
                 a_Conf.Serialize( DB_VERSION );
                 a_Conf.CurrDbVersion = DB_VERSION;
                 a_Conf.SerializeDialog  ( this );
+                a_Conf.Serialize( m_ExportFname );
+                a_Conf.Serialize( stickWindowsToolStripMenuItem.Checked );
             }
 
             fileCmbTour  .Serialize( ref a_Conf );
@@ -87,6 +113,7 @@ namespace BikeTourImport
             m_Data       .Serialize( ref a_Conf );  
             userCmbTitle .Serialize( ref a_Conf );
             userCmbOdo   .Serialize( ref a_Conf );
+            m_Prefs      .Serialize( ref a_Conf );
         }
 
         /***************************************************************************
@@ -372,6 +399,75 @@ namespace BikeTourImport
                     return;
                 }
             }
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       06.09.2025
+        LAST CHANGE:   06.09.2025
+        ***************************************************************************/
+        private void preferencesToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            m_Prefs.ShowDialog();
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       06.09.2025
+        LAST CHANGE:   06.09.2025
+        ***************************************************************************/
+        private void exportSettingsToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            if( m_Config.Export( ref m_ExportFname ) )
+            {
+                Serialize( ref m_Config );
+                m_Config.Close();
+            }
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       06.09.2025
+        LAST CHANGE:   06.09.2025
+        ***************************************************************************/
+        private void importSettingsToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            if( m_Config.Import( ref m_ExportFname ) )
+            {
+                Serialize( ref m_Config );
+                m_Config.Close();
+            }
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       06.09.2025
+        LAST CHANGE:   06.09.2025
+        ***************************************************************************/
+        private void allWindowsToFrontToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            m_Wins.AllWinsToFront();
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       06.09.2025
+        LAST CHANGE:   06.09.2025
+        ***************************************************************************/
+        private void rearrangeWindowsToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            m_Wins.Rearrange();
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       06.09.2025
+        LAST CHANGE:   06.09.2025
+        ***************************************************************************/
+        private void BikeImport_LocationChanged( object sender, EventArgs e )
+        {
+            if( m_Wins == null ) return;
+            m_Wins.LocationChanged( stickWindowsToolStripMenuItem.Checked );
         }
     }
 }

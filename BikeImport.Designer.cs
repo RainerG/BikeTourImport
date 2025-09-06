@@ -40,6 +40,16 @@
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.importSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allWindowsToFrontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rearrangeWindowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.stickWindowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.userCmbOdo = new NS_UserCombo.UserComboBox();
             this.userCmbTitle = new NS_UserCombo.UserComboBox();
             this.userRichTextBox = new NS_Utilities.UserRichTextBox();
@@ -107,7 +117,9 @@
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.optionsToolStripMenuItem,
+            this.viewToolStripMenuItem});
             resources.ApplyResources(this.menuStrip, "menuStrip");
             this.menuStrip.Name = "menuStrip";
             // 
@@ -116,6 +128,7 @@
             this.helpToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Image = global::BikeTourImport.Properties.Resources.icons8_hilfe_48;
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             resources.ApplyResources(this.helpToolStripMenuItem, "helpToolStripMenuItem");
             // 
@@ -124,6 +137,78 @@
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             resources.ApplyResources(this.aboutToolStripMenuItem, "aboutToolStripMenuItem");
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportSettingsToolStripMenuItem,
+            this.importSettingsToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.preferencesToolStripMenuItem});
+            resources.ApplyResources(this.optionsToolStripMenuItem, "optionsToolStripMenuItem");
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            // 
+            // exportSettingsToolStripMenuItem
+            // 
+            this.exportSettingsToolStripMenuItem.Image = global::BikeTourImport.Properties.Resources.icons8_exportieren_80;
+            this.exportSettingsToolStripMenuItem.Name = "exportSettingsToolStripMenuItem";
+            resources.ApplyResources(this.exportSettingsToolStripMenuItem, "exportSettingsToolStripMenuItem");
+            this.exportSettingsToolStripMenuItem.Click += new System.EventHandler(this.exportSettingsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
+            // 
+            // importSettingsToolStripMenuItem
+            // 
+            this.importSettingsToolStripMenuItem.Image = global::BikeTourImport.Properties.Resources.icons8_importieren_80;
+            this.importSettingsToolStripMenuItem.Name = "importSettingsToolStripMenuItem";
+            resources.ApplyResources(this.importSettingsToolStripMenuItem, "importSettingsToolStripMenuItem");
+            this.importSettingsToolStripMenuItem.Click += new System.EventHandler(this.importSettingsToolStripMenuItem_Click);
+            // 
+            // preferencesToolStripMenuItem
+            // 
+            this.preferencesToolStripMenuItem.Image = global::BikeTourImport.Properties.Resources.icons8_zahnrad_48;
+            this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+            resources.ApplyResources(this.preferencesToolStripMenuItem, "preferencesToolStripMenuItem");
+            this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.allWindowsToFrontToolStripMenuItem,
+            this.rearrangeWindowsToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.stickWindowsToolStripMenuItem});
+            this.viewToolStripMenuItem.Image = global::BikeTourImport.Properties.Resources.auge;
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            resources.ApplyResources(this.viewToolStripMenuItem, "viewToolStripMenuItem");
+            // 
+            // allWindowsToFrontToolStripMenuItem
+            // 
+            this.allWindowsToFrontToolStripMenuItem.Image = global::BikeTourImport.Properties.Resources.icons8_front_sortierung_48;
+            this.allWindowsToFrontToolStripMenuItem.Name = "allWindowsToFrontToolStripMenuItem";
+            resources.ApplyResources(this.allWindowsToFrontToolStripMenuItem, "allWindowsToFrontToolStripMenuItem");
+            this.allWindowsToFrontToolStripMenuItem.Click += new System.EventHandler(this.allWindowsToFrontToolStripMenuItem_Click);
+            // 
+            // rearrangeWindowsToolStripMenuItem
+            // 
+            this.rearrangeWindowsToolStripMenuItem.Name = "rearrangeWindowsToolStripMenuItem";
+            resources.ApplyResources(this.rearrangeWindowsToolStripMenuItem, "rearrangeWindowsToolStripMenuItem");
+            this.rearrangeWindowsToolStripMenuItem.Click += new System.EventHandler(this.rearrangeWindowsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            resources.ApplyResources(this.toolStripSeparator1, "toolStripSeparator1");
+            // 
+            // stickWindowsToolStripMenuItem
+            // 
+            this.stickWindowsToolStripMenuItem.CheckOnClick = true;
+            this.stickWindowsToolStripMenuItem.Image = global::BikeTourImport.Properties.Resources.icons8_kleben_40;
+            this.stickWindowsToolStripMenuItem.Name = "stickWindowsToolStripMenuItem";
+            resources.ApplyResources(this.stickWindowsToolStripMenuItem, "stickWindowsToolStripMenuItem");
             // 
             // userCmbOdo
             // 
@@ -197,6 +282,7 @@
             this.Name = "BikeImport";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BikeImport_FormClosing);
             this.Load += new System.EventHandler(this.BikeImport_Load);
+            this.LocationChanged += new System.EventHandler(this.BikeImport_LocationChanged);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -222,6 +308,16 @@
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem allWindowsToFrontToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rearrangeWindowsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem stickWindowsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportSettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importSettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
 
