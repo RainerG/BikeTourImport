@@ -28,7 +28,7 @@ namespace BikeTourImport
         private const string INI_FNAME  = BASE_NAME + ".ini";
         private const string EXPORTXL   = "D:\\data\\DOCS\\Bike\\Radtouren\\KMundHM.xlsm";
         private const string ODOMETER   = "CM9.3A";
-        private const string RELEASE    = "Release: 1.00 RC4";
+        private const string RELEASE    = "Release: 1.00 RC5";
 
 
         /***************************************************************************
@@ -197,24 +197,31 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   26.06.2019
+        LAST CHANGE:   08.09.2025
         ***************************************************************************/
         private void btnImport_Click( object sender, EventArgs e )
         {
+            Cursor = Cursors.WaitCursor;
+
+            AddTextEntries();
+
             m_Filename = fileCmbTour.Text;
             string ext = Utils.GetExtension( m_Filename ).ToLower();
             m_Fit = ( ext == "fit" );
+            m_Data.ExpFilNm = Utils.GetFilenameBody( fileCmbTour.Text, true );
             m_Data.Import( m_Filename, m_Fit );
             m_Data.Calculate( m_Fit );
             m_Data.ShowData ( m_Fit );
 
             ShowTitle( m_Filename );
+
+            Cursor = Cursors.Default;
         }
 
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       06.05.2019
-        LAST CHANGE:   03.09.2025
+        LAST CHANGE:   08.09.2025
         ***************************************************************************/
         private void btnRenFile_Click( object sender, EventArgs e )
         {
@@ -252,6 +259,7 @@ namespace BikeTourImport
                 m_Filename = Utils.ConcatPaths( m_Filename, newfn );
                 m_Filename = m_Filename + ext;
                 fileCmbTour.Text = m_Filename;
+                m_Data.ExpFilNm  = Utils.GetFilenameBody( m_Filename, true );
 
                 string dir    = Utils.GetPath( m_Filename );
                 string[] fls  = Directory.GetFiles(dir);

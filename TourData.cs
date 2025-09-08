@@ -24,9 +24,10 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: Accessors
         CREATED:       06.09.2025
-        LAST CHANGE:   06.09.2025
+        LAST CHANGE:   08.09.2025
         ***************************************************************************/
-        public OutputList OutList { get { return m_OutList; } }
+        public OutputList OutList  { get { return m_OutList; } }
+        public string     ExpFilNm { set { m_ExpFilNm = value; } }
 
         /***************************************************************************
         SPECIFICATION: Members
@@ -42,22 +43,24 @@ namespace BikeTourImport
         private Statistics        m_Statcs;
         private UserRichTextBox   m_RTB;
         private Preferences       m_Prefs;
+        private string            m_ExpFilNm;
 
         /***************************************************************************
         SPECIFICATION: C'tor
         CREATED:       01.05.2018
-        LAST CHANGE:   06.09.2025
+        LAST CHANGE:   08.09.2025
         ***************************************************************************/
         public TourData( UserRichTextBox a_RTB, Preferences a_Prefs )
         {
-            m_RTB     = a_RTB;
-            m_LineNr  = 0;
-            m_Lap     = null;
-            m_Recs    = new List<Record>();
-            m_OutList = new OutputList();
-            m_XlExp   = m_OutList.WdXlExport;
-            m_Statcs  = new Statistics();
-            m_Prefs   = a_Prefs;
+            m_RTB      = a_RTB;
+            m_LineNr   = 0;
+            m_Lap      = null;
+            m_Recs     = new List<Record>();
+            m_OutList  = new OutputList();
+            m_XlExp    = m_OutList.WdXlExport;
+            m_Statcs   = new Statistics();
+            m_Prefs    = a_Prefs;
+            m_ExpFilNm = "Tour";
 
             List<NumFormat> frmts = m_XlExp.NumFrmts;
             frmts.Add( new NumFormat( 1,"yyyy.mm.dd") );
@@ -121,11 +124,12 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   06.09.2025
+        LAST CHANGE:   07.09.2025
         ***************************************************************************/
         public void Import( string a_Fname, bool a_Fit = false )
         {
             StreamReader rdr = null;
+            string sectname  = "";
             m_Recs.Clear();
             m_LineNr = 0;
             System.DateTime lasttime = new System.DateTime();
@@ -163,7 +167,9 @@ namespace BikeTourImport
                                 System.IO.File.WriteAllLines( "d:\\tmp\\test.txt", fds );
                                 #endif
 
-                                switch( e.mesg.Name.ToLower() )
+                                sectname = e.mesg.Name;
+
+                                switch( sectname.ToLower() )
                                 {
                                     case "unknown":
                                         break;
@@ -291,13 +297,13 @@ namespace BikeTourImport
                                         m_Lap.TotAscent   = (ushort)totascnt  ;
                                         m_Lap.TotDescent  = (ushort)totdescnt ;
                                         m_Lap.TotDistance = (float)totdist / 1000.0f;
-                                        m_Lap.MaxHrtRate  = (byte)maxhrtrate;
-                                        m_Lap.AvgHrtRate  = (byte)avghrtrate;
-                                        m_Lap.MaxCadence  = (byte)maxcadence; 
-                                        m_Lap.AvgCadence  = (byte)avgcadence;
-                                        m_Lap.MaxTemp     = (sbyte)maxtemp  ;
-                                        m_Lap.AvgTemp     = (sbyte)avgtemp  ;
-                                        m_Lap.Sport       = (byte) sport    ;
+                                        m_Lap.MaxHrtRate  = (byte)RetVal( maxhrtrate, "b" );
+                                        m_Lap.AvgHrtRate  = (byte)RetVal( avghrtrate, "b" );
+                                        m_Lap.MaxCadence  = (byte)RetVal( maxcadence, "b" ); 
+                                        m_Lap.AvgCadence  = (byte)RetVal( avgcadence, "b" );
+                                        m_Lap.MaxTemp     = (sbyte)RetVal( maxtemp  , "sb");
+                                        m_Lap.AvgTemp     = (sbyte)RetVal( avgtemp  , "sb");
+                                        m_Lap.Sport       = (byte) RetVal( sport    , "b" );
                                         m_Lap.SetStartTime( (uint) starttm );
                                         m_Lap.SetTotTime  ( (float)totelpsdtm );
 
@@ -341,7 +347,6 @@ namespace BikeTourImport
                                         ds.Temperature  = string.Format( "{0}", temperature );
 
                                         m_Recs.Add( ds );
-                                        m_LineNr++;
                                         break;
 
                                     case "deviceinfo":
@@ -417,6 +422,7 @@ namespace BikeTourImport
                                 }
                             };
 
+                            m_LineNr++;
                             decode.MesgEvent += broadcaster.OnMesg;
                             decode.Read( fitFile );
                         }
@@ -445,16 +451,37 @@ namespace BikeTourImport
                         break;
                 }
 
-                ShowInList( a_Fit );
+                ShowInList( m_ExpFilNm, a_Fit );
             }
             catch ( Exception ex )
             {
-                MessageBox.Show("Error parsing line " + m_LineNr + "\n\n" + ex.Message, "Import error");
+                MessageBox.Show("Error parsing section " + sectname + " loop nr: " +  m_LineNr + "\n\n" + ex.Message, "Import error");
             }
             finally
             {
                 if (rdr != null) rdr.Close();
             }
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       07.09.2025
+        LAST CHANGE:   07.09.2025
+        ***************************************************************************/
+        private object RetVal( object a_Val, string a_Tp )
+        {
+            if ( a_Val == null )
+            {
+                switch( a_Tp )
+                {
+                    case "b" : return (byte)0;
+                    case "sb": return (sbyte)0;
+                    case "i" : return (int)0;
+                    case "ui": return (uint)0;
+                }
+            }
+
+            return a_Val;
         }
 
         /***************************************************************************
@@ -505,11 +532,12 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       01.05.2018
-        LAST CHANGE:   20.06.2025
+        LAST CHANGE:   08.09.2025
         ***************************************************************************/
-        private void ShowInList( bool a_Fit = false )
+        private void ShowInList( string a_ExpFilNm, bool a_Fit = false )
         {
             m_OutList.Clear();
+            m_OutList.XlExpFilNm = a_ExpFilNm;
 
             m_OutList.ShowColumns(m_Cols);
 
