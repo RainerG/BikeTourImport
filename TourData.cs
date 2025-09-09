@@ -48,19 +48,13 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: C'tor
         CREATED:       01.05.2018
-        LAST CHANGE:   08.09.2025
+        LAST CHANGE:   09.09.2025
         ***************************************************************************/
         public TourData( UserRichTextBox a_RTB, Preferences a_Prefs )
         {
+            Init();
             m_RTB      = a_RTB;
-            m_LineNr   = 0;
-            m_Lap      = null;
-            m_Recs     = new List<Record>();
-            m_OutList  = new OutputList();
-            m_XlExp    = m_OutList.WdXlExport;
-            m_Statcs   = new Statistics();
             m_Prefs    = a_Prefs;
-            m_ExpFilNm = "Tour";
 
             List<NumFormat> frmts = m_XlExp.NumFrmts;
             frmts.Add( new NumFormat( 1,"yyyy.mm.dd") );
@@ -101,6 +95,22 @@ namespace BikeTourImport
             //chrts.Add( new ChartFormat( "Dist", "Caden" , Excel.XlRgbColor.rgbBlueViolet )); 
             //chrts.Add( new ChartFormat( "Dist", "Temp"  , Excel.XlRgbColor.rgbOrange ));     
 
+        }
+
+        /***************************************************************************
+        SPECIFICATION: 
+        CREATED:       09.09.2025
+        LAST CHANGE:   09.09.2025
+        ***************************************************************************/
+        public void Init()
+        {
+            m_LineNr   = 0;
+            m_Lap      = null;
+            m_Recs     = new List<Record>();
+            m_OutList  = new OutputList();
+            m_XlExp    = m_OutList.WdXlExport;
+            m_Statcs   = new Statistics();
+            m_ExpFilNm = "Tour";
         }
 
         /***************************************************************************
@@ -160,7 +170,7 @@ namespace BikeTourImport
 
                             broadcaster.MesgEvent += ( sender, e ) =>
                             {
-                                #if false
+                                #if true
                                 List<Field> flds = (List<Field>)e.mesg.Fields;
                                 List<string> fds = new List<string>();
                                 foreach( Field f in flds ) fds.Add( f.Name );
@@ -552,7 +562,7 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       22.07.2018
-        LAST CHANGE:   20.06.2025
+        LAST CHANGE:   09.09.2025
         ***************************************************************************/
         public void Calculate( bool a_Fit = false )
         {
@@ -563,6 +573,12 @@ namespace BikeTourImport
             double dist = 0.0;
             double ac   = 0;
             double pv   = 0;
+            double tm   = 0;
+            double hr   = 0;
+            double tmax = -1000;
+            double tmin =  1000;
+            double hmax = -1000;
+            double hmin =  1000;
             bool   init = true;
 
             Record prv = null;
@@ -589,10 +605,19 @@ namespace BikeTourImport
                         pv = (double)prv.iAltitude;
                     }
 
+                    tm = ds.dTemper;
+                    hr = ds.dHrtRate;
+
+                    if (tm > tmax) tmax = tm;
+                    if (tm < tmin) tmin = tm;
+
                     if( ds.dSpeed == 0.0 ) continue;
 
                     if (ac > amax) amax = ac;
                     if (ac < amin) amin = ac;
+
+                    if (hr > hmax)           hmax = hr;
+                    if (hr < hmin && hr > 0) hmin = hr;
 
                     if ( pv > ac  ) accn += ( pv - ac );
                     if ( pv < ac  ) accp += ( ac - pv );
@@ -607,6 +632,10 @@ namespace BikeTourImport
 
                 m_Statcs.AltMax    = amax;
                 m_Statcs.AltMin    = amin;
+                m_Statcs.TempMax   = tmax;
+                m_Statcs.TempMin   = tmin;
+                m_Statcs.HrMax     = hmax;
+                m_Statcs.HrMin     = hmin;
                 m_Statcs.Ascent    = accp;
                 m_Statcs.Descent   = accn;
                 dist               = Utils.Str2Double( td_last.Distance );
@@ -677,13 +706,13 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       25.08.2018
-        LAST CHANGE:   01.09.2025
+        LAST CHANGE:   09.09.2025
         ***************************************************************************/
         public void ShowData( bool a_Fit = false )
         {
             m_RTB.Clear();
             
-            if ( a_Fit )
+            if ( m_Lap != null )
             {
                 Output( "Start Time", m_Lap.TimeStart );
                 Output( "Stop  Time", m_Lap.TimeStop  );
@@ -696,10 +725,10 @@ namespace BikeTourImport
                 Output( "Descent"       , m_Lap.TotDescent , "hm"  );
                 Output( "Max Cadence"   , m_Lap.MaxCadence , "rpm" );
                 Output( "Avg Cadence"   , m_Lap.AvgCadence , "rpm" );
-                Output( "Max Heart Rate", m_Lap.MaxHrtRate, "bpm" );
-                Output( "Avg Heart Rate", m_Lap.AvgHrtRate, "bpm" );
-                Output( "Max Temper."   , m_Lap.MaxTemp   , "°C" );
-                Output( "Avg Temper."   , m_Lap.AvgTemp   , "°C" );
+                Output( "Max Heart Rate", m_Lap.MaxHrtRate , "bpm" );
+                Output( "Avg Heart Rate", m_Lap.AvgHrtRate , "bpm" );
+                Output( "Max Temper."   , m_Lap.MaxTemp    , "°C" );
+                Output( "Avg Temper."   , m_Lap.AvgTemp    , "°C" );
             }
             else
             {
@@ -707,18 +736,22 @@ namespace BikeTourImport
                 Output( "Stop  Time", m_Statcs.TimeStop );
                 Output( "Duration", m_Statcs.TimeStop - m_Statcs.TimeStart );
 
-                Output( "Distance", m_Statcs.Distnce, "km" );
-                Output( "Max Altitude", m_Statcs.AltMax, "m" );
-                Output( "Min Altitude", m_Statcs.AltMin, "m" );
-                Output( "Ascent", m_Statcs.Ascent, "hm" );
-                Output( "Descent", m_Statcs.Descent, "hm" );
+                Output( "Distance"       , m_Statcs.Distnce, "km" );
+                Output( "Max Altitude"   , m_Statcs.AltMax , "m" );
+                Output( "Min Altitude"   , m_Statcs.AltMin , "m" );
+                Output( "Ascent"         , m_Statcs.Ascent , "hm" );
+                Output( "Descent"        , m_Statcs.Descent, "hm" );
+                Output( "Max Heart rate" , m_Statcs.HrMax  , "bpm" );
+                Output( "Min Heart rate" , m_Statcs.HrMin  , "bpm" );
+                Output( "Max Temper."    , m_Statcs.TempMax, "°C" );
+                Output( "Min Temper."    , m_Statcs.TempMin, "°C" );
             }
         }
 
         /***************************************************************************
         SPECIFICATION: 
         CREATED:       28.08.2018
-        LAST CHANGE:   03.09.2025
+        LAST CHANGE:   09.09.2025
         ***************************************************************************/
         public void Export2XL( string a_Fname, string a_Title, string a_Odo )
         {
@@ -742,8 +775,8 @@ namespace BikeTourImport
                 lst.Add( new XlCell( "" ) );
                 string dist = string.Format( "{0:0.00}", m_Statcs.Distnce );
                 dist = dist.Replace( ".", "," );
-                lst.Add( new XlCell( string.Format( dist ), "@" ) );
-                lst.Add( new XlCell( string.Format( "{0}", m_Statcs.Ascent ), "@" ) );
+                lst.Add( new XlCell( string.Format( dist ), "" ) );
+                lst.Add( new XlCell( string.Format( "{0}", m_Statcs.Ascent ), "" ) );
             }
             else
             {
@@ -751,7 +784,7 @@ namespace BikeTourImport
                 lst.Add( new XlCell( string.Format( "{0:dd. MMM. yyyy}", m_Statcs.TimeStart.Date ), "dd. MMM. yyyy" ) );
                 lst.Add( new XlCell( "" ) );
                 lst.Add( new XlCell( string.Format( "{0:00}:{1:00}", m_Statcs.TimeStart.Hour, m_Statcs.TimeStart.Minute ), "HH:mm" ) );
-                lst.Add( new XlCell( string.Format( "{0:00}:{1:00}", m_Statcs.TimeStop.Hour, m_Statcs.TimeStop.Minute ), "HH:mm" ) );
+                lst.Add( new XlCell( string.Format( "{0:00}:{1:00}", m_Statcs.TimeStop .Hour, m_Statcs.TimeStop.Minute  ), "HH:mm" ) );
                 lst.Add( new XlCell( "" ) );
                 lst.Add( new XlCell( string.Format( "{0}", a_Odo ) ) );
                 lst.Add( new XlCell( "" ) );
@@ -760,8 +793,8 @@ namespace BikeTourImport
                 lst.Add( new XlCell( "" ) );
                 string dist = string.Format( "{0:0.00}", m_Lap.TotDistance );
                 dist = dist.Replace( ".", "," );
-                lst.Add( new XlCell( string.Format( dist ), "@" ) );
-                lst.Add( new XlCell( string.Format( "{0}", m_Lap.TotAscent ), "@" ) );
+                lst.Add( new XlCell( string.Format( dist ), "" ) );
+                lst.Add( new XlCell( string.Format( "{0}", m_Lap.TotAscent ), "" ) );
             }
             m_XlExp.AppendLine( lst, 0, true );
             m_XlExp.SaveExcel( );

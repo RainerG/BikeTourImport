@@ -28,7 +28,7 @@ namespace BikeTourImport
         private const string INI_FNAME  = BASE_NAME + ".ini";
         private const string EXPORTXL   = "D:\\data\\DOCS\\Bike\\Radtouren\\KMundHM.xlsm";
         private const string ODOMETER   = "CM9.3A";
-        private const string RELEASE    = "Release: 1.00 RC5";
+        private const string RELEASE    = "Release: 1.00 RC6";
 
 
         /***************************************************************************
@@ -208,6 +208,7 @@ namespace BikeTourImport
             m_Filename = fileCmbTour.Text;
             string ext = Utils.GetExtension( m_Filename ).ToLower();
             m_Fit = ( ext == "fit" );
+            m_Data.Init();
             m_Data.ExpFilNm = Utils.GetFilenameBody( fileCmbTour.Text, true );
             m_Data.Import( m_Filename, m_Fit );
             m_Data.Calculate( m_Fit );
@@ -231,7 +232,7 @@ namespace BikeTourImport
 
                 if ( ! System.IO.File.Exists(m_Filename) )
                 {
-                    MessageBox.Show(m_Filename + " does not exist","File error");
+                    MessageBox.Show(m_Filename + " does not exist", "File error");
                     return;
                 }
 

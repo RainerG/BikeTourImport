@@ -17,10 +17,14 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: Members
         CREATED:       22.07.2018
-        LAST CHANGE:   20.06.2025
+        LAST CHANGE:   09.09.2025
         ***************************************************************************/
         public double   AltMax;
         public double   AltMin;
+        public double   TempMax;
+        public double   TempMin;
+        public double   HrMax;
+        public double   HrMin;
         public double   Ascent;
         public double   Descent;
         public double   Distnce;

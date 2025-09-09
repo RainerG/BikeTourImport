@@ -17,11 +17,13 @@ namespace BikeTourImport
         /***************************************************************************
         SPECIFICATION: Accessors
         CREATED:       22.07.2018
-        LAST CHANGE:   20.06.2025
+        LAST CHANGE:   09.09.2025
         ***************************************************************************/
-        public int    iAltitude { get { return Utils.Str2Int(ConvertNeg(Altitude)); } }
-        public double dAltitude { get { return Utils.Str2Double(Altitude); } }
-        public double dSpeed    { get { return Utils.Str2Double(Speed); } }
+        public int    iAltitude { get { return Utils.Str2Int(ConvertNeg( Altitude ) ); } }
+        public double dAltitude { get { return Utils.Str2Double( Altitude ); } }
+        public double dTemper   { get { return Utils.Str2Double( Temperature ); } }
+        public double dHrtRate  { get { return Utils.Str2Double( HeartRate ); } }
+        public double dSpeed    { get { return Utils.Str2Double( Speed ); } }
 
         /***************************************************************************
         SPECIFICATION: Members
